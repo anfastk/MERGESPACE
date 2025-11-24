@@ -1,8 +1,13 @@
 package output
 
-import "github.com/anfastk/MERGESPACE/internal/auth-service/domain/entity"
+import (
+	"context"
+
+	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/entity"
+)
 
 type UserRepository interface {
-	Save(user *entity.User) error
-	FindByEmail(email string) (*entity.User, error)
+	Save(ctx context.Context, user *entity.User) error
+	FindByEmail(ctx context.Context, email string) (*entity.User, error)
+	IDExists(ctx context.Context, id uint64) (bool, error)
 }
