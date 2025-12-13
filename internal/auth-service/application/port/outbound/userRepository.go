@@ -1,4 +1,4 @@
-package output
+package outbound
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 )
 
 type UserRepository interface {
-	Save(ctx context.Context, user *entity.User) error
 	FindByEmail(ctx context.Context, email string) (*entity.User, error)
-	IDExists(ctx context.Context, id uint64) (bool, error)
+	FindByUsername(ctx context.Context, username string) (*entity.User, error)
 }

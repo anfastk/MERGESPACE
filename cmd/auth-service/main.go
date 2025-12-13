@@ -1,16 +1,17 @@
 package main
 
-import (
-	"log"
+/* import (
 
-	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/config"
-	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/database"
-	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/di"
-)
+"log"
+"github.com/anfastk/MERGESPACE/internal/auth-service/application/service"
+"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/config"
+"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/database"
+"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/di"
+) */
 
 func main() {
-	
-	cfg, err := config.Load()
+
+	/* cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,5 +29,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	appServer.Run()
+	appServer.Run() */
 }
+

@@ -1,7 +1,8 @@
 package server
 
-import (
-	"github.com/anfastk/MERGESPACE/internal/auth-service/adapter/controller/http"
+/* import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +14,7 @@ type Server struct {
 func NewServer(authHandler *http.AuthHandler, port string) *Server {
 	router := gin.Default()
 
-	authHandler.RegisterRoutes(router)
+	authHandler.SignupRoutes(router)
 
 	return &Server{
 		engine: router,
@@ -24,3 +25,4 @@ func NewServer(authHandler *http.AuthHandler, port string) *Server {
 func (s *Server) Run() error {
 	return s.engine.Run(":" + s.port)
 }
+ */

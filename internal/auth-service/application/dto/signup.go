@@ -1,7 +1,23 @@
 package dto
 
-type RegisterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
-	Username string `json:"username" binding:"required"`
+type SignupStatus string
+
+const (
+	SignupStatusUnspecified   SignupStatus = "UNSPECIFIED"
+	SignupStatusOtpSent       SignupStatus = "OTP_SENT"
+	SignupStatusRateLimited   SignupStatus = "RATE_LIMITED"
+	SignupStatusInvalidPhone  SignupStatus = "INVALID_PHONE"
+	SignupStatusInternalError SignupStatus = "INTERNAL_ERROR"
+)
+
+type InitiateSignUpRequest struct {
+	Email     string
+	FirstName string
+	LastName  string
+	Password  string
+}
+
+type InitiateSignUpResponse struct {
+	SignupSessionID string
+	Status          SignupStatus
 }

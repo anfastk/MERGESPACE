@@ -1,8 +1,6 @@
 package di
 
-import (
-	"github.com/anfastk/MERGESPACE/internal/auth-service/adapter/controller/http"
-	"github.com/anfastk/MERGESPACE/internal/auth-service/adapter/repository/postgres"
+/* import (
 	"github.com/anfastk/MERGESPACE/internal/auth-service/application/service"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/config"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/server"
@@ -16,3 +14,4 @@ func InitializeApp(db *gorm.DB, cfg *config.Config) (*server.Server, error) {
 
 	return server.NewServer(authHandler, cfg.ServerPort), nil
 }
+ */

@@ -1,7 +1,7 @@
 package database
 
-import (
-	"github.com/anfastk/MERGESPACE/internal/auth-service/adapter/repository/postgres"
+/* import (
+	"github.com/anfastk/MERGESPACE/auth-service/adapter/repository/postgres"
 	"gorm.io/gorm"
 )
 
@@ -11,3 +11,4 @@ func AutoMigrate(db *gorm.DB) error {
 		&postgres.SessionModel{},
 	)
 }
+*/
