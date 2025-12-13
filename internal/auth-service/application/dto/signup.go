@@ -1,12 +1,23 @@
 package dto
 
-type SignupInput struct {
-    Email    string `json:"email"`
-    Password string `json:"password"`
-    Username string `json:"username"`
+type SignupStatus string
+
+const (
+	SignupStatusUnspecified   SignupStatus = "UNSPECIFIED"
+	SignupStatusOtpSent       SignupStatus = "OTP_SENT"
+	SignupStatusRateLimited   SignupStatus = "RATE_LIMITED"
+	SignupStatusInvalidPhone  SignupStatus = "INVALID_PHONE"
+	SignupStatusInternalError SignupStatus = "INTERNAL_ERROR"
+)
+
+type InitiateSignUpRequest struct {
+	Email     string
+	FirstName string
+	LastName  string
+	Password  string
 }
 
-type SignupOutput struct {
-    UserID int64  `json:"user_id"`
-    Email  string `json:"email"`
+type InitiateSignUpResponse struct {
+	SignupSessionID string
+	Status          SignupStatus
 }

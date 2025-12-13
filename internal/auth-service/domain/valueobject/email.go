@@ -1,15 +1,29 @@
 package valueobject
 
 import (
-	"errors"
+	"regexp"
 	"strings"
+
+	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/errs"
 )
 
-type Email string
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 
-func NewEmail(v string) (Email, error) {
-	if len(v) < 5 || !strings.Contains(v, "@") {
-		return "", errors.New("invalid email")
+type Email struct {
+	value string
+}
+
+func NewEmail(raw string) (Email, error) {
+	raw = strings.TrimSpace(strings.ToLower(raw))
+	if raw == "" {
+		return Email{}, errs.ErrEmptyEmail
 	}
-	return Email(v), nil
+	if !emailRegex.MatchString(raw) {
+		return Email{}, errs.ErrInvalidEmail
+	}
+	return Email{value: raw}, nil
+}
+
+func (e Email) String() string {
+	return e.value
 }

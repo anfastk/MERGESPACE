@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package mergespace.v1;
+
+option go_package = "api/proto/v1;authpb";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  string status = 4;
+  string auth_provider = 5; // "local", "google", "github"
+}
+
+message AuthTokens {
+  string access_token = 1;
+  string refresh_token = 2;
+  string session_id = 3;
+  int64 access_expires_at = 4;
+  int64 refresh_expires_at = 5;
+}
+
+message SignUpRequest {
+  string email = 1;
+  string firstname = 2;
+  string lastname = 3;
+  string password = 4;
+}
+
+enum SignupStatus {
+  SIGNUP_STATUS_UNSPECIFIED = 0;
+  OTP_SENT = 1;
+  RATE_LIMITED = 2;
+  INVALID_PHONE = 3;
+  INTERNAL_ERROR = 4;
+}
+
+message SignUpResponce {
+  string signup_session_id = 1;
+  SignupStatus status = 2;
+}
+
+message AuthResponse {
+  User user = 1;
+  AuthTokens tokens = 2;
+}
+
+service AuthService {
+  rpc SignUp(SignUpRequest) returns (SignUpResponce);
+}
