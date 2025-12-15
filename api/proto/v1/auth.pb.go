@@ -435,9 +435,9 @@ const file_api_proto_v1_auth_proto_rawDesc = "" +
 	"\bOTP_SENT\x10\x01\x12\x10\n" +
 	"\fRATE_LIMITED\x10\x02\x12\x11\n" +
 	"\rINVALID_PHONE\x10\x03\x12\x12\n" +
-	"\x0eINTERNAL_ERROR\x10\x042T\n" +
-	"\vAuthService\x12E\n" +
-	"\x06SignUp\x12\x1c.mergespace.v1.SignUpRequest\x1a\x1d.mergespace.v1.SignUpResponceB\x15Z\x13api/proto/v1;authpbb\x06proto3"
+	"\x0eINTERNAL_ERROR\x10\x042\\\n" +
+	"\vAuthService\x12M\n" +
+	"\x0eInitiateSignup\x12\x1c.mergespace.v1.SignUpRequest\x1a\x1d.mergespace.v1.SignUpResponceB\x15Z\x13api/proto/v1;authpbb\x06proto3"
 
 var (
 	file_api_proto_v1_auth_proto_rawDescOnce sync.Once
@@ -465,8 +465,8 @@ var file_api_proto_v1_auth_proto_depIdxs = []int32{
 	0, // 0: mergespace.v1.SignUpResponce.status:type_name -> mergespace.v1.SignupStatus
 	1, // 1: mergespace.v1.AuthResponse.user:type_name -> mergespace.v1.User
 	2, // 2: mergespace.v1.AuthResponse.tokens:type_name -> mergespace.v1.AuthTokens
-	3, // 3: mergespace.v1.AuthService.SignUp:input_type -> mergespace.v1.SignUpRequest
-	4, // 4: mergespace.v1.AuthService.SignUp:output_type -> mergespace.v1.SignUpResponce
+	3, // 3: mergespace.v1.AuthService.InitiateSignup:input_type -> mergespace.v1.SignUpRequest
+	4, // 4: mergespace.v1.AuthService.InitiateSignup:output_type -> mergespace.v1.SignUpResponce
 	4, // [4:5] is the sub-list for method output_type
 	3, // [3:4] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

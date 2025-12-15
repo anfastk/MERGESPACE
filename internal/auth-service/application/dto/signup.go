@@ -1,13 +1,13 @@
 package dto
 
-type SignupStatus string
+type SignupStatus int
 
 const (
-	SignupStatusUnspecified   SignupStatus = "UNSPECIFIED"
-	SignupStatusOtpSent       SignupStatus = "OTP_SENT"
-	SignupStatusRateLimited   SignupStatus = "RATE_LIMITED"
-	SignupStatusInvalidPhone  SignupStatus = "INVALID_PHONE"
-	SignupStatusInternalError SignupStatus = "INTERNAL_ERROR"
+	SignupStatusUnspecified SignupStatus = iota
+	SignupStatusOTPSent
+	SignupStatusRateLimited
+	SignupStatusInvalidPhone
+	SignupStatusInternalError
 )
 
 type InitiateSignUpRequest struct {

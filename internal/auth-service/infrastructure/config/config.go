@@ -1,10 +1,19 @@
 package config
 
+type KafkaConfig struct {
+	Brokers           []string
+	SchemaRegistryURL string
+	UserSignupTopic   string
+}
+
+type RedisConfig struct {
+	Addr     string
+	Password string
+	DB       int
+}
+
 type Config struct {
-	DBHost     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBPort     string
-	ServerPort string
+	DatabaseURL string
+	Kafka       KafkaConfig
+	Redis       RedisConfig
 }

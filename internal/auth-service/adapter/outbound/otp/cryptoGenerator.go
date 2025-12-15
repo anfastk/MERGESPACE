@@ -17,6 +17,10 @@ const digits = "0123456789"
 
 var ErrOTPRandFailed = errors.New("failed to generate secure OTP")
 
+func NewCryptoOTPGenerator() outbound.OTPGenerator {
+	return &CryptoOTPGenerator{}
+}
+
 func (CryptoOTPGenerator) Generate() (string, error) {
 	otp := make([]byte, length)
 	for i := 0; i < length; i++ {

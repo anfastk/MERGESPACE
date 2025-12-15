@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/anfastk/MERGESPACE/internal/auth-service/application/dto"
@@ -25,16 +26,18 @@ type AuthService struct {
 	otpGen         outbound.OTPGenerator
 	idGen          outbound.IDGenerator
 	pendingSignups outbound.PendingSignupRepository
+	otpPublisher   outbound.OTPEventPublisher
 }
 
-func NewAuthService(user outbound.UserRepository, usernameGen *UsernameGenerator, otpGen outbound.OTPGenerator, idGen outbound.IDGenerator, pendingSignups outbound.PendingSignupRepository) *AuthService {
+func NewAuthService(user outbound.UserRepository, usernameGen *UsernameGenerator, otpGen outbound.OTPGenerator, idGen outbound.IDGenerator, pendingSignups outbound.PendingSignupRepository, pub outbound.OTPEventPublisher) *AuthService {
 	return &AuthService{
 		user:           user,
 		usernameGen:    usernameGen,
 		otpGen:         otpGen,
 		idGen:          idGen,
 		pendingSignups: pendingSignups,
-	}	
+		otpPublisher:   pub,
+	}
 }
 
 func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUpRequest) (*dto.InitiateSignUpResponse, error) {
@@ -105,13 +108,29 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 		CreatedAt:    now,
 		ExpiresAt:    now.Add(otpTTLMinutes * time.Minute),
 	}
+	log.Println("1. Redis save start")
 
 	if err := s.pendingSignups.Save(ctx, pending); err != nil {
 		return nil, err
 	}
+	log.Println("1. Redis save end", err)
+
+	event := dto.SignupOTPEvent{
+
+		SignupSessionID: string(tempID),
+		Email:           email.String(),
+		OTP:             otp,
+		CreatedAt:       time.Now().Unix(),
+	}
+	log.Println("2. Kafka publish start")
+
+	if err = s.otpPublisher.PublishOTPEvent(ctx, event); err != nil {
+		return nil, err
+	}
+	log.Println("2. Kafka publish end", err)
 
 	return &dto.InitiateSignUpResponse{
 		SignupSessionID: string(tempID),
-		Status:          dto.SignupStatusOtpSent,
+		Status:          dto.SignupStatusOTPSent,
 	}, nil
 }
