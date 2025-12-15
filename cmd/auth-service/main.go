@@ -1,34 +1,34 @@
 package main
 
-/* import (
+import (
+	"log"
+	"net"
 
-"log"
-"github.com/anfastk/MERGESPACE/internal/auth-service/application/service"
-"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/config"
-"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/database"
-"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/di"
-) */
+	authpb "github.com/anfastk/MERGESPACE/api/proto/v1"
+	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/di"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+)
 
 func main() {
+	container := di.InitContainer()
 
-	/* cfg, err := config.Load()
+	grpcServer := grpc.NewServer()
+
+	authpb.RegisterAuthServiceServer(
+		grpcServer,
+		container.AuthService,
+	)
+	reflection.Register(grpcServer)
+
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to listen: %v", err)
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Println("Auth Service gRPC running on :50051")
 
-	if err := database.AutoMigrate(db); err != nil {
-		log.Fatal(err)
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
-
-	appServer, err := di.InitializeApp(db, cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-	appServer.Run() */
 }
-

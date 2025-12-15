@@ -9,6 +9,10 @@ type UUIDGenerator struct{}
 
 var _ outbound.IDGenerator = (*UUIDGenerator)(nil)
 
+func NewUUIDGenerator() outbound.IDGenerator {
+	return &UUIDGenerator{}
+}
+
 func (g *UUIDGenerator) NewID() string {
 	return uuid.NewString()
 }

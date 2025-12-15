@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -12,12 +13,32 @@ func Load() (*Config, error) {
 		log.Println("Warning: .env not found:", err)
 	}
 
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	dbPort := os.Getenv("DB_PORT")
+
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		dbUser,
+		dbPass,
+		dbHost,
+		dbPort,
+		dbName,
+	)
+
 	return &Config{
-		DBHost:     os.Getenv("DB_HOST"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBPort:     os.Getenv("DB_PORT"),
-		ServerPort: getEnv("SERVER_PORT", "8080"),
+		DatabaseURL: dsn,
+		Redis: RedisConfig{
+			Addr:     getEnv("REDIS_ADDR", "localhost:6379"),
+			Password: getEnv("REDIS_PASSWORD", ""),
+			DB:       getEnvInt("REDIS_DB", 0),
+		},
+		Kafka: KafkaConfig{
+			Brokers:           []string{getEnv("KAFKA_BROKERS", "localhost:9092")},
+			SchemaRegistryURL: getEnv("SCHEMA_REGISTRY", "http://localhost:8081"),
+			UserSignupTopic:   getEnv("TOPIC_USER_SIGNUP", "user.signup"),
+		},
 	}, nil
 }

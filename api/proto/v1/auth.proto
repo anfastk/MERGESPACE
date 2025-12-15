@@ -46,5 +46,5 @@ message AuthResponse {
 }
 
 service AuthService {
-  rpc SignUp(SignUpRequest) returns (SignUpResponce);
+  rpc InitiateSignup(SignUpRequest) returns (SignUpResponce);
 }
