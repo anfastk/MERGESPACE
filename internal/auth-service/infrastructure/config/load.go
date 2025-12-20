@@ -36,7 +36,7 @@ func Load() (*Config, error) {
 			DB:       getEnvInt("REDIS_DB", 0),
 		},
 		Kafka: KafkaConfig{
-			Brokers:           []string{getEnv("KAFKA_BROKERS", "localhost:9092")},
+			Brokers:           []string{getEnv("KAFKA_BROKERS", "localhost:29092")},
 			SchemaRegistryURL: getEnv("SCHEMA_REGISTRY", "http://localhost:8081"),
 			UserSignupTopic:   getEnv("TOPIC_USER_SIGNUP", "user.signup"),
 		},
