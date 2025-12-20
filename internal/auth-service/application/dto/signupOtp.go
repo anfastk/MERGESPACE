@@ -6,4 +6,3 @@ type SignupOTPEvent struct {
 	OTP             string
 	CreatedAt       int64
 }
-	
