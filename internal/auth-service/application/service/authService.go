@@ -10,6 +10,7 @@ import (
 	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/entity"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/errs"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/valueobject"
+	"github.com/anfastk/MERGESPACE/shared/ratelimiter/limiter"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,9 +28,10 @@ type AuthService struct {
 	idGen          outbound.IDGenerator
 	pendingSignups outbound.PendingSignupRepository
 	otpPublisher   outbound.OTPEventPublisher
+	rateLimiter    *limiter.Limiter
 }
 
-func NewAuthService(user outbound.UserRepository, usernameGen *UsernameGenerator, otpGen outbound.OTPGenerator, idGen outbound.IDGenerator, pendingSignups outbound.PendingSignupRepository, pub outbound.OTPEventPublisher) *AuthService {
+func NewAuthService(user outbound.UserRepository, usernameGen *UsernameGenerator, otpGen outbound.OTPGenerator, idGen outbound.IDGenerator, pendingSignups outbound.PendingSignupRepository, pub outbound.OTPEventPublisher, rateLimiter *limiter.Limiter) *AuthService {
 	return &AuthService{
 		user:           user,
 		usernameGen:    usernameGen,
@@ -37,10 +39,28 @@ func NewAuthService(user outbound.UserRepository, usernameGen *UsernameGenerator
 		idGen:          idGen,
 		pendingSignups: pendingSignups,
 		otpPublisher:   pub,
+		rateLimiter:    rateLimiter,
 	}
 }
 
 func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUpRequest) (*dto.InitiateSignUpResponse, error) {
+	/* 	ok, _, err := s.rateLimiter.Allow(
+	   		ctx,
+	   		limiter.SignupIPRule,
+	   		clientIP,
+	   	)
+	   	if err != nil || !ok {
+	   		return nil, errs.ErrTooManyRequests
+	   	} */
+
+	ok, _, err := s.rateLimiter.Allow(
+		ctx,
+		limiter.SignupEmailRule,
+		req.Email,
+	)
+	if err != nil || !ok {
+		return nil, errs.ErrTooManyRequests
+	}
 
 	email, err := valueobject.NewEmail(req.Email)
 	if err != nil {

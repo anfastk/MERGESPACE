@@ -1,6 +1,7 @@
 package di
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -16,6 +17,9 @@ import (
 	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/database"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/infrastructure/redis"
 	"github.com/anfastk/MERGESPACE/shared/kafka/producer"
+	"github.com/anfastk/MERGESPACE/shared/ratelimiter/limiter"
+	"github.com/anfastk/MERGESPACE/shared/ratelimiter/limiter/algorithm"
+	"github.com/anfastk/MERGESPACE/shared/ratelimiter/limiter/backend"
 )
 
 type Container struct {
@@ -64,6 +68,18 @@ func InitContainer() *Container {
 		DB:   0,
 	})
 
+	scripts, err := backend.LoadScripts(context.Background(), redisClient)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rlStore := backend.NewRedisStore(redisClient, scripts)
+	tokenBucketAlgo := algorithm.NewTokenBucket(rlStore)
+
+	rateLimiter := limiter.NewLimiter([]limiter.Algorithm{
+		tokenBucketAlgo,
+	})
+
 	pendingSignupRepo := adapterRedis.NewPendingSignupRepository(redisClient)
 
 	authService := service.NewAuthService(
@@ -73,6 +89,7 @@ func InitContainer() *Container {
 		idGen,
 		pendingSignupRepo,
 		otpPublisher,
+		rateLimiter,
 	)
 	authHandler := grpc.NewSignupHandler(*authService)
 
