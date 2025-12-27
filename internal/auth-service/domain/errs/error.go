@@ -23,4 +23,5 @@ var (
 	ErrOTPExpired               = errors.New("otp expired")
 	ErrUsernameGenerationFailed = errors.New("unable to generate unique username")
 	ErrInternalServer           = errors.New("internal server error")
+	ErrTooManyRequests          = errors.New("too many signup attempts")
 )
