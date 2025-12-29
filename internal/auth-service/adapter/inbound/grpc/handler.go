@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"log"
 
 	authpb "github.com/anfastk/MERGESPACE/api/proto/v1"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/application/dto"
@@ -19,7 +18,6 @@ func NewSignupHandler(usecase service.AuthService) *SignupHandler {
 }
 
 func (h *SignupHandler) InitiateSignup(ctx context.Context, req *authpb.SignUpRequest) (*authpb.SignUpResponce, error) {
-	log.Print("Req", req)
 	res, err := h.usecase.InitiateSignup(ctx, dto.InitiateSignUpRequest{
 		Email:     req.Email,
 		FirstName: req.Firstname,
@@ -27,7 +25,7 @@ func (h *SignupHandler) InitiateSignup(ctx context.Context, req *authpb.SignUpRe
 		Password:  req.Password,
 	})
 	if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 
 	return &authpb.SignUpResponce{
