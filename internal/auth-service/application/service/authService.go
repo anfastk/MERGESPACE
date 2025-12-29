@@ -2,13 +2,12 @@ package service
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/anfastk/MERGESPACE/internal/auth-service/application/dto"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/application/port/outbound"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/entity"
-	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/errs"
+	domainErr "github.com/anfastk/MERGESPACE/internal/auth-service/domain/errs"
 	"github.com/anfastk/MERGESPACE/internal/auth-service/domain/valueobject"
 	"github.com/anfastk/MERGESPACE/shared/ratelimiter/limiter"
 	"golang.org/x/crypto/bcrypt"
@@ -50,7 +49,7 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 	   		clientIP,
 	   	)
 	   	if err != nil || !ok {
-	   		return nil, errs.ErrTooManyRequests
+	   		return nil, domainErr.ErrTooManyRequests
 	   	} */
 
 	ok, _, err := s.rateLimiter.Allow(
@@ -59,7 +58,7 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 		req.Email,
 	)
 	if err != nil || !ok {
-		return nil, errs.ErrTooManyRequests
+		return nil, domainErr.ErrTooManyRequests
 	}
 
 	email, err := valueobject.NewEmail(req.Email)
@@ -95,13 +94,13 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 	if u, err := s.user.FindByEmail(ctx, email.String()); err != nil {
 		return nil, err
 	} else if u != nil {
-		return nil, errs.ErrEmailAlreadyExists
+		return nil, domainErr.ErrEmailAlreadyExists
 	}
 
 	if u, err := s.user.FindByUsername(ctx, userName.String()); err != nil {
 		return nil, err
 	} else if u != nil {
-		return nil, errs.ErrUsernameExists
+		return nil, domainErr.ErrUsernameExists
 	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password.String()), bcrypt.DefaultCost)
@@ -128,12 +127,10 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 		CreatedAt:    now,
 		ExpiresAt:    now.Add(otpTTLMinutes * time.Minute),
 	}
-	log.Println("1. Redis save start")
 
 	if err := s.pendingSignups.Save(ctx, pending); err != nil {
 		return nil, err
 	}
-	log.Println("1. Redis save end", err)
 
 	event := dto.SignupOTPEvent{
 
@@ -142,12 +139,10 @@ func (s *AuthService) InitiateSignup(ctx context.Context, req dto.InitiateSignUp
 		OTP:             otp,
 		CreatedAt:       time.Now().Unix(),
 	}
-	log.Println("2. Kafka publish start")
 
 	if err = s.otpPublisher.PublishOTPEvent(ctx, event); err != nil {
 		return nil, err
 	}
-	log.Println("2. Kafka publish end", err)
 
 	return &dto.InitiateSignUpResponse{
 		SignupSessionID: string(tempID),
