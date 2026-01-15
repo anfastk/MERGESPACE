@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package mergespace.v1;
+package auth.v1;
+
+import "google/api/annotations.proto";
 
 option go_package = "api/proto/v1;authpb";
 
@@ -46,5 +48,10 @@ message AuthResponse {
 }
 
 service AuthService {
-  rpc InitiateSignup(SignUpRequest) returns (SignUpResponce);
+  rpc InitiateSignup(SignUpRequest) returns (SignUpResponce){
+    option (google.api.http) = {
+    post: "/v1/auth/signup"
+    body: "*"
+    };
+  }
 }
